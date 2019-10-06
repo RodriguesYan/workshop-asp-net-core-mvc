@@ -74,8 +74,16 @@ namespace SalesWebMVC.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int id)
         {
-            _sellerService.Delete(id);
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                _sellerService.Delete(id);
+                return RedirectToAction(nameof(Index));
+            }
+            catch(IntegrityException e)
+            {
+                return RedirectToAction(nameof(Error), new { message = e.Message });
+            }
+            
         }
 
         public IActionResult Details(int? id)
@@ -147,7 +155,7 @@ namespace SalesWebMVC.Controllers
             }
         }
 
-        public IActionResult Error(string message)
+        public IActionResult Error(string message)  
         {
             var vm = new ErrorViewModel
             {
